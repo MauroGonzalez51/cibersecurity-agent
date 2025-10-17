@@ -10,6 +10,9 @@ class EnvConfig(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = str(...)
 
+    openrouter_api_key: str = str(...)
+    virustotal_api_key: str = str(...)
+
     model_config = SettingsConfigDict(
         env_file=str(ROOTDIR / ".env"), env_file_encoding="utf-8", case_sensitive=False
     )

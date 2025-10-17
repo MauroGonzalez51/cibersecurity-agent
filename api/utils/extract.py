@@ -4,6 +4,13 @@ from typing import Optional
 from django.http.request import HttpRequest
 
 
+def _normalize(source: str) -> str:
+    if not source.startswith(("http://", "https://")):
+        return f"http://{source}"
+
+    return source
+
+
 def extract_callback_url(request: HttpRequest) -> Optional[str]:
     """
     Extrae el callback_url de diferentes fuentes.
@@ -13,23 +20,20 @@ def extract_callback_url(request: HttpRequest) -> Optional[str]:
     2. Header (X-Callback-Url)
     3. Body JSON ({"callback_url": "..."})
     """
-    # Query params
     callback_url = request.GET.get("callback_url")
     if callback_url:
-        return callback_url
+        return _normalize(source=callback_url)
 
-    # Headers
     callback_url = request.headers.get("X-Callback-Url")
     if callback_url:
-        return callback_url
+        return _normalize(source=callback_url)
 
-    # Body JSON
     if request.content_type == "application/json" and request.body:
         try:
             body = json.loads(request.body.decode())
             callback_url = body.get("callback_url")
             if callback_url:
-                return callback_url
+                return _normalize(source=callback_url)
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
 

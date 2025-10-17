@@ -1,14 +1,13 @@
-"""
-Django HTTP Proxy View - Modernizado y refactorizado
-Basado en django-revproxy, actualizado con httpx, tipado y mejor estructura.
-"""
-
 from django.http.request import HttpRequest
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import HttpAgentDecision
+from .analysis import ia, vt
+from .models import (
+    HttpAgentDecision,
+)
 from .utils.extract import extract_callback_url
+from .utils.request import build_request_context
 
 
 @csrf_exempt
@@ -25,5 +24,10 @@ def agent(request: HttpRequest):
                 callback_url=callback_url,
             )
         )
+
+    context = build_request_context(request=request, callback_url=callback_url)
+
+    ia(context=context)
+    vt(context=context)
 
     return JsonResponse(dict(status="success"))
