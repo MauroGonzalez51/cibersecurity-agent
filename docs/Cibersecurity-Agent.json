@@ -1,0 +1,447 @@
+{
+  "name": "Cibersecurity-Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "security-alert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        592
+      ],
+      "id": "eb2b748f-d193-4fa0-bacb-4ccbec02c119",
+      "name": "Webhook - POST",
+      "webhookId": "3306968e-f683-4625-8f91-75ca1e2d68c3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61fdfbd0-a71a-4573-b25d-88b28a686299",
+              "name": "alert_type",
+              "value": "={{ $json.body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "cc6a24b9-19b9-408b-9b8f-955619e96a42",
+              "name": "severity",
+              "value": "={{ $json.body.severity }}",
+              "type": "string"
+            },
+            {
+              "id": "bada5705-6651-44ff-89d7-16650c73b242",
+              "name": "ip_address",
+              "value": "={{ $json.headers['x-real-ip'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6ee0639b-3b18-4e4a-9f72-973a0ddaec1e",
+              "name": "timestamp",
+              "value": "={{ $now }}",
+              "type": "string"
+            },
+            {
+              "id": "415f6431-1719-473a-84be-cc6e45f0f78d",
+              "name": "user_agent",
+              "value": "={{ $json.headers['user-agent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "21f1fe83-3fa9-44f4-a323-a5e406fed228",
+              "name": "details",
+              "value": "={{ $json.body.details }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        592
+      ],
+      "id": "d5649bf0-1898-48e6-9564-d73624a7d9f8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.severity }}",
+                    "rightValue": "critical",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1f5fdc16-e227-425f-b7ee-da539cc0d85e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "481e6723-ab8d-4c4b-9941-834a5058be5d",
+                    "leftValue": "={{ $json.severity }}",
+                    "rightValue": "high",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f9741d42-b770-492e-a375-dfd5bf376a82",
+                    "leftValue": "={{ $json.severity }}",
+                    "rightValue": "medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b9761c2f-11f5-4269-8482-74a526b387f8",
+                    "leftValue": "={{ $json.severity }}",
+                    "rightValue": "low",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fa57d580-044b-41ad-b96e-88a3bbee19d7",
+                    "leftValue": "={{ $json.severity }}",
+                    "rightValue": "unknown",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -48,
+        592
+      ],
+      "id": "4364ba06-03f6-4581-970f-96f6a91a16e0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"openai/gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a cybersecurity analyst. Analyze security alerts and provide:\\n1. Threat analysis\\n2. Risk level (Low, Medium, High, or Critical)\\n3. Immediate recommended actions\\n4. Indicators of Compromise (IOCs)\\n5. Mitigation steps\\n\\nKeep your analysis concise, professional, and actionable. Use bullet points or short paragraphs where appropriate.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"=Analyze this security alert:\\n\\nAlert Type: {{ $json.alert_type }}\\nSeverity: {{ $json.severity }}\\nSource IP: {{ $json.ip_address }}\\nTimestamp: {{ $json.timestamp }}\\nUser Agent: {{ $json.user_agent }}\\n\\nAdditional Details:\\n{{ $json.details || 'No additional details available' }}\\n\\nCurrent System Time: {{ $now }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        544
+      ],
+      "id": "e024b772-de51-46f8-b259-2fbc8b5a4a6f",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2PafvTCyr3ZUAGjb",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "preBuiltAgentsCalloutHttpRequest": "",
+        "httpVariantWarning": "",
+        "curlImport": "",
+        "method": "GET",
+        "": "",
+        "url": "=https://www.virustotal.com/api/v3/ip_addresses/{{ $json.ip_address }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "virusTotalApi",
+        "provideSslCertificates": false,
+        "sendQuery": false,
+        "sendHeaders": false,
+        "sendBody": false,
+        "options": {},
+        "infoMessage": ""
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        704
+      ],
+      "id": "288a0554-3c47-4767-939f-959be9483038",
+      "name": "VirusTotal HTTP Request",
+      "extendsCredential": "virusTotalApi",
+      "credentials": {
+        "virusTotalApi": {
+          "id": "B50QSwe80MicFpqC",
+          "name": "VirusTotal account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        640
+      ],
+      "id": "cd92f286-59a8-4842-baf3-ae3e2970a3d1",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        944,
+        640
+      ],
+      "id": "f8f27dab-fd22-4ff2-9ad6-5efe516a49a5",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Motor de Veredictos de Ciberseguridad\n// Input: Datos mergeados de OpenAI + VirusTotal\n\nconst input = $input.all();\n\n// Extraer datos de OpenAI (primer elemento)\nconst aiResponse = input[0].json.choices?.[0]?.message?.content || '';\n\n// Extraer datos de VirusTotal (segundo elemento)\nconst vtData = input[1].json.data?.attributes || {};\n\n// Datos de la alerta original\nconst alertData = $('Edit Fields').first().json;\n\n// === ANÁLISIS DE THREAT INTELLIGENCE ===\nconst vtStats = vtData.last_analysis_stats || {};\nconst maliciousCount = vtStats.malicious || 0;\nconst suspiciousCount = vtStats.suspicious || 0;\nconst reputation = vtData.reputation || 0;\n\n// Extraer información del país\nconst country = vtData.country || 'UNKNOWN';\nconst asn = vtData.asn || 0;\nconst network = vtData.network || 'UNKNOWN';\n\n// === CÁLCULO DE RISK SCORE ===\nfunction calculateRiskScore() {\n  let score = 0;\n  \n  // 1. Severidad de la alerta (0-30 puntos)\n  switch(alertData.severity?.toLowerCase()) {\n    case 'critical':\n      score += 30;\n      break;\n    case 'high':\n      score += 20;\n      break;\n    case 'medium':\n      score += 10;\n      break;\n    case 'low':\n      score += 5;\n      break;\n  }\n  \n  // 2. VirusTotal - Detecciones maliciosas (0-40 puntos)\n  score += Math.min(maliciousCount * 4, 40);\n  \n  // 3. VirusTotal - Detecciones sospechosas (0-20 puntos)\n  score += Math.min(suspiciousCount * 2, 20);\n  \n  // 4. Reputación negativa (0-10 puntos)\n  if (reputation < -50) score += 10;\n  else if (reputation < 0) score += 5;\n  \n  // 5. Análisis de la IA\n  const aiLower = aiResponse.toLowerCase();\n  if (aiLower.includes('critical') || aiLower.includes('immediate')) score += 10;\n  if (aiLower.includes('backdoor') || aiLower.includes('exploit')) score += 15;\n  if (aiLower.includes('malicious')) score += 10;\n  \n  return Math.min(Math.round(score), 100);\n}\n\n// === DETERMINACIÓN DEL VEREDICTO ===\nfunction determineVerdict(riskScore) {\n  // BLOCK: Amenaza crítica inmediata\n  if (riskScore >= 75) return 'BLOCK';\n  \n  // QUARANTINE: Amenaza alta, requiere aislamiento\n  if (riskScore >= 50) return 'QUARANTINE';\n  \n  // INVESTIGATE: Comportamiento sospechoso\n  if (riskScore >= 30) return 'INVESTIGATE';\n  \n  // MONITOR: Riesgo bajo, solo observar\n  if (riskScore >= 15) return 'MONITOR';\n  \n  // ALLOW: Sin amenaza detectada\n  return 'ALLOW';\n}\n\n// === ACCIONES RECOMENDADAS ===\nfunction getRecommendedActions(verdict, riskScore) {\n  const actions = [];\n  \n  switch(verdict) {\n    case 'BLOCK':\n      actions.push('Bloquear IP inmediatamente en firewall');\n      actions.push('Aislar sistemas afectados de la red');\n      actions.push('Iniciar investigación forense');\n      actions.push('Notificar al equipo SOC inmediatamente');\n      if (maliciousCount > 5) {\n        actions.push('Buscar IOCs relacionados en toda la red');\n      }\n      break;\n      \n    case 'QUARANTINE':\n      actions.push('Mover sistemas afectados a red de cuarentena');\n      actions.push('Limitar acceso de la IP');\n      actions.push('Analizar logs de acceso detalladamente');\n      actions.push('Verificar lateral movement');\n      break;\n      \n    case 'INVESTIGATE':\n      actions.push('Revisar logs del sistema afectado');\n      actions.push('Aumentar nivel de monitoreo para esta IP');\n      actions.push('Correlacionar con otros eventos de seguridad');\n      actions.push('Verificar si hay patrones de ataque');\n      break;\n      \n    case 'MONITOR':\n      actions.push('Continuar monitoreo pasivo');\n      actions.push('Registrar evento para análisis de tendencias');\n      actions.push('No se requiere acción inmediata');\n      break;\n      \n    case 'ALLOW':\n      actions.push('Sin amenaza detectada');\n      actions.push('Registrar como falso positivo potencial');\n      break;\n  }\n  \n  return actions;\n}\n\n// === EXTRACCIÓN DE IOCs ===\nfunction extractIOCs() {\n  const iocs = {\n    ip_address: alertData.ip_address,\n    country: country,\n    asn: asn,\n    network: network,\n    user_agent: alertData.user_agent || 'N/A',\n    attack_type: alertData.type,\n    timestamp: alertData.timestamp\n  };\n  \n  // Intentar extraer más IOCs del análisis de IA\n  const ipRegex = /\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b/g;\n  const hashRegex = /\\b[a-fA-F0-9]{32,64}\\b/g;\n  \n  const ipsFound = aiResponse.match(ipRegex) || [];\n  const hashesFound = aiResponse.match(hashRegex) || [];\n  \n  if (ipsFound.length > 0) iocs.related_ips = [...new Set(ipsFound)];\n  if (hashesFound.length > 0) iocs.file_hashes = [...new Set(hashesFound)];\n  \n  return iocs;\n}\n\n// === GENERAR RESUMEN EJECUTIVO ===\nfunction generateExecutiveSummary(verdict, riskScore) {\n  const severity = alertData.severity?.toUpperCase() || 'UNKNOWN';\n  \n  let summary = `🚨 SECURITY ALERT - ${severity}\\n\\n`;\n  summary += `Veredicto: ${verdict}\\n`;\n  summary += `Risk Score: ${riskScore}/100\\n`;\n  summary += `IP: ${alertData.ip_address} (${country})\\n`;\n  summary += `Tipo de Ataque: ${alertData.type}\\n\\n`;\n  \n  summary += `📊 VirusTotal Analysis:\\n`;\n  summary += `- Detecciones Maliciosas: ${maliciousCount}/95\\n`;\n  summary += `- Detecciones Sospechosas: ${suspiciousCount}/95\\n`;\n  summary += `- Reputación: ${reputation}\\n\\n`;\n  \n  summary += `🤖 IA Analysis Summary:\\n`;\n  const aiLines = aiResponse.split('\\n').slice(0, 5).join('\\n');\n  summary += aiLines + '\\n';\n  \n  return summary;\n}\n\n// === CALCULAR TODO ===\nconst riskScore = calculateRiskScore();\nconst verdict = determineVerdict(riskScore);\nconst actions = getRecommendedActions(verdict, riskScore);\nconst iocs = extractIOCs();\nconst executiveSummary = generateExecutiveSummary(verdict, riskScore);\n\n// === GENERAR REPORTE FINAL ===\nconst finalReport = {\n  // Metadata\n  report_id: `SEC-${Date.now()}`,\n  timestamp: new Date().toISOString(),\n  \n  // Veredicto\n  verdict: verdict,\n  risk_score: riskScore,\n  confidence: maliciousCount > 0 ? 'HIGH' : 'MEDIUM',\n  \n  // Alert original\n  alert: {\n    type: alertData.type,\n    severity: alertData.severity,\n    ip: alertData.ip_address,\n    timestamp: alertData.timestamp,\n    details: alertData.details\n  },\n  \n  // Threat Intelligence\n  threat_intelligence: {\n    virustotal: {\n      malicious_detections: maliciousCount,\n      suspicious_detections: suspiciousCount,\n      total_scans: 95,\n      reputation: reputation,\n      country: country,\n      asn: asn,\n      network: network\n    }\n  },\n  \n  // Análisis de IA\n  ai_analysis: {\n    full_report: aiResponse,\n    summary: aiResponse.split('\\n')[0]\n  },\n  \n  // IOCs\n  indicators_of_compromise: iocs,\n  \n  // Acciones recomendadas\n  recommended_actions: actions,\n  \n  // Resumen ejecutivo\n  executive_summary: executiveSummary,\n  \n  // Prioridad\n  priority: riskScore >= 75 ? 'P1-CRITICAL' : \n            riskScore >= 50 ? 'P2-HIGH' :\n            riskScore >= 30 ? 'P3-MEDIUM' : 'P4-LOW',\n  \n  // Estado\n  status: 'PENDING_REVIEW',\n  \n  // Tags para búsqueda\n  tags: [\n    verdict,\n    alertData.severity,\n    alertData.type,\n    country,\n    `risk_${riskScore}`\n  ]\n};\n\n// === OUTPUT ===\nreturn {\n  json: finalReport\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        640
+      ],
+      "id": "7564769d-dc59-493b-906c-fdb370f52789",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - POST": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VirusTotal HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VirusTotal HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "920d8ab2-4488-4e57-9787-88b0f7334db8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e41fa17ac9a5049d1ab109b25cd1bff9e3ed8f9ddfde5e289928c575f0a4a6bb"
+  },
+  "id": "BklevQkdd2Mviypc",
+  "tags": []
+}
