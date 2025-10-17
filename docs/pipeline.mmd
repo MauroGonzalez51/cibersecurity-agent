@@ -1,0 +1,106 @@
+graph TD
+    Start([🌐 Incoming Request]) --> Extract[📥 Extract Context]
+    Extract --> |callback_url, IP, headers, body| PreCheck{🔍 Pre-Analysis<br/>Validation}
+    
+    PreCheck -->|Missing URL| Block1[🚫 BLOCK<br/>Risk: 100]
+    PreCheck -->|Valid| Parallel[⚡ Parallel Analysis]
+    
+    Parallel --> AI[🤖 AI Analysis<br/>OpenAI/Claude]
+    Parallel --> VT[🛡️ VirusTotal<br/>Threat Intel]
+    Parallel --> Lookback[📊 Lookback Engine<br/>Historical Data]
+    Parallel --> GeoIP[🌍 GeoIP Analysis<br/>Location Risk]
+    
+    AI --> |Contextual threat analysis| Reasoning
+    VT --> |Malicious/Suspicious count| Reasoning
+    Lookback --> |Past incidents from IP| Reasoning
+    GeoIP --> |Country risk score| Reasoning
+    
+    Reasoning[🧠 Reasoning Engine<br/>Multi-factor Analysis]
+    
+    Reasoning --> RiskCalc[📊 Risk Score Calculator]
+    
+    RiskCalc --> |Score 0-100| Decision{⚖️ Decision Engine}
+    
+    Decision -->|Score ≥ 75| Block[🚫 BLOCK<br/>Immediate threat]
+    Decision -->|Score 50-74| Quarantine[⚠️ QUARANTINE<br/>High risk]
+    Decision -->|Score 30-49| Investigate[🔍 INVESTIGATE<br/>Medium risk]
+    Decision -->|Score 15-29| Monitor[👁️ MONITOR<br/>Low risk]
+    Decision -->|Score < 15| Allow[✅ ALLOW<br/>Safe]
+    
+    Block --> Actions1[📋 Generate Actions]
+    Quarantine --> Actions1
+    Investigate --> Actions1
+    Monitor --> Actions1
+    Allow --> Actions1
+    
+    Actions1 --> IOC[🔎 Extract IOCs<br/>IPs, Hashes, Domains]
+    IOC --> Report[📝 Generate Report]
+    
+    Report --> Store[(💾 Store in Database<br/>Audit Trail)]
+    Store --> Alert{📢 Alert Level?}
+    
+    Alert -->|P1-CRITICAL| Notify1[🚨 Immediate Notification<br/>Email + Slack + SMS]
+    Alert -->|P2-HIGH| Notify2[📧 Email + Slack]
+    Alert -->|P3-MEDIUM| Notify3[📧 Email Only]
+    Alert -->|P4-LOW| Notify4[📝 Log Only]
+    
+    Notify1 --> Response
+    Notify2 --> Response
+    Notify3 --> Response
+    Notify4 --> Response
+    Block1 --> Response
+    
+    Response([📤 JSON Response<br/>Verdict + Report])
+    
+    Store -.->|Feed back| Lookback
+    
+    subgraph "🎯 Analysis Layer"
+        AI
+        VT
+        Lookback
+        GeoIP
+    end
+    
+    subgraph "🧠 Intelligence Layer"
+        Reasoning
+        RiskCalc
+    end
+    
+    subgraph "⚖️ Decision Layer"
+        Decision
+        Block
+        Quarantine
+        Investigate
+        Monitor
+        Allow
+    end
+    
+    subgraph "📊 Reporting Layer"
+        Actions1
+        IOC
+        Report
+        Store
+    end
+    
+    subgraph "🔔 Notification Layer"
+        Alert
+        Notify1
+        Notify2
+        Notify3
+        Notify4
+    end
+    
+    style Start fill:#e1f5ff,stroke:#0288d1,stroke-width:2px,color:#222
+    style Response fill:#e1f5ff,stroke:#0288d1,stroke-width:2px,color:#222
+    style Block fill:#d32f2f,stroke:#b71c1c,stroke-width:2px,color:#fff
+    style Quarantine fill:#ff9800,stroke:#f57c00,stroke-width:2px,color:#fff
+    style Investigate fill:#fbc02d,stroke:#f9a825,stroke-width:2px,color:#222
+    style Monitor fill:#388e3c,stroke:#1b5e20,stroke-width:2px,color:#fff
+    style Allow fill:#43a047,stroke:#2e7d32,stroke-width:2px,color:#fff
+    style Reasoning fill:#7e57c2,stroke:#512da8,stroke-width:2px,color:#fff
+    style RiskCalc fill:#7e57c2,stroke:#512da8,stroke-width:2px,color:#fff
+    style AI fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
+    style VT fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
+    style Lookback fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
+    style GeoIP fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#fff
+    style Store fill:#ad1457,stroke:#880e4f,stroke-width:2px,color:#fff
