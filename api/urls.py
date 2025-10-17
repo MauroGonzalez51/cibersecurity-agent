@@ -1,3 +1,5 @@
-# from django.urls import path
+from django.urls import path
 
-urlpatterns = []
+from .views import agent
+
+urlpatterns = [path("agent/", agent, name="agent")]
