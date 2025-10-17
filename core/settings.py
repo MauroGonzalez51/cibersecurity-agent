@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from typing import Any, Dict, List
 
+from .env import env_config
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -27,12 +29,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "api.apps.ApiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
 ]
 
 MIDDLEWARE = [
@@ -69,9 +70,14 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES: Dict[str, Dict[str, Any]] = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env_config.postgres_db,
+        "USER": env_config.postgres_user,
+        "PASSWORD": env_config.postgres_password,
+        "HOST": env_config.postgres_host,
+        "PORT": env_config.postgres_port,
     }
 }
 
