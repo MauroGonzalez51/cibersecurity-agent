@@ -1,0 +1,69 @@
+\section{Implementación Técnica}
+
+\subsection{Integración de Componentes}
+
+El agente está construido sobre una arquitectura modular que facilita la integración de análisis de geolocalización, reputación de IP y razonamiento heurístico. Cada módulo se comunica a través de un flujo centralizado, gestionado por Django, que orquesta la recepción de solicitudes, el procesamiento de datos y la toma de decisiones.
+
+La base de datos relacional almacena dinámicamente los indicadores de riesgo por país e IP, permitiendo que el agente adapte su comportamiento en función de la experiencia acumulada. La consulta a servicios externos, como VirusTotal y GeoLite2, enriquece el análisis sin comprometer la eficiencia del sistema.
+
+\subsection{Flujo de Trabajo del Agente}
+
+El ciclo principal del agente sigue el patrón percepción $\rightarrow$ razonamiento $\rightarrow$ acción. El siguiente fragmento ilustra el flujo de procesamiento de una solicitud:
+
+\begin{lstlisting}[language=python, inputencoding=utf8]
+@csrf_exempt
+def agent(request: HttpRequest):
+    callback_url = extract_callback_url(request=request)
+    if not callback_url:
+        return JsonResponse(HttpAgentDecision(
+            decision="BLOCK",
+            risk_score=100,
+            threats=["missing_callback_url"],
+            callback_url=callback_url,
+            context=None,
+        ))
+    context = build_request_context(request=request, callback_url=callback_url)
+    _ia, _vt, _geo = ia(context=context), vt(context=context), geo(context=context)
+    decision = reasoning(context=context, vt=_vt, ia=_ia, geo=_geo)
+    return JsonResponse(decision.model_dump_json(indent=4))
+\end{lstlisting}
+
+\subsection{Actualización Dinámica de Riesgo}
+
+El agente actualiza automáticamente los registros de riesgo asociados a cada país e IP.\@{}Por ejemplo, al recibir una solicitud, incrementa el contador de solicitudes y, si corresponde, el de eventos maliciosos:
+
+\begin{lstlisting}[language=python, inputencoding=utf8]
+with transaction.atomic():
+    obj, created = CountryRiskRecord.objects.select_for_update().get_or_create(
+        country_code=country_code,
+        defaults=dict(total_requests=1, malicious_requests=0, risk_score=0.0)
+    )
+    if not created:
+        obj.total_requests = models.F("total_requests") + 1
+        obj.save()
+\end{lstlisting}
+
+\subsection{Motor de Razonamiento}
+
+El motor de razonamiento centraliza la lógica de decisión, ponderando los resultados de los análisis y penalizando la falta de información relevante. Si el puntaje de riesgo supera un umbral, la solicitud es bloqueada automáticamente:
+
+\begin{lstlisting}[language=python, inputencoding=utf8]
+def reasoning(context, ia, vt, geo):
+    risk_score = 0.0
+    threats = []
+    if ia is None:
+        risk_score += 40
+        threats.append("ia_unavailable")
+    # ... (logica para vt y geo)
+    if risk_score >= 70 or "ia_unavailable" in threats:
+        decision = "BLOCK"
+    else:
+        decision = "ALLOW"
+    return HttpAgentDecision(
+        decision=decision,
+        error="",
+        risk_score=risk_score,
+        threats=threats,
+        callback_url=context.callback_url,
+    )
+\end{lstlisting}

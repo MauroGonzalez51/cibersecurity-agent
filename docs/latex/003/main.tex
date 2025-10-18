@@ -1,0 +1,153 @@
+\documentclass[letterpaper, 12pt]{article}
+
+% ===== Idioma y codificación =====
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
+% ===== Diseño y formato general =====
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{chngcntr}
+\usepackage{tocloft}
+\usepackage{bm}
+\usepackage{enumitem}
+
+% ===== Matemáticas =====
+\usepackage{amsmath}
+
+% ===== Hipervínculos =====
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=cyan!70!black,
+    citecolor=magenta!70!black
+}
+
+% ===== Código fuente =====
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle, frame=single, framerule=0.5pt, rulecolor=\color{gray!60}}
+
+% ===== Citas y bibliografía =====
+\usepackage{csquotes}
+\usepackage[style=apa, maxnames=2, minnames=1, backend=biber, parentracker=true, sorting=none]{biblatex}
+\DefineBibliographyStrings{english}{
+      andothers = {\em et\addabbrvspace{} al\adddot{}\/}
+}
+\addbibresource{./Bibliography/bibliography.bib}
+
+% ===== Personalización de secciones y TOC =====
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsecpagefont}{\bfseries}
+
+% ===== Otros ajustes =====
+\setlength{\parskip}{0pt}
+\raggedbottom{}
+\counterwithin{figure}{section}
+\newcommand{\bolditalic}[1]{\textbf{\textit{#1}}}
+
+% ===== chktex =====
+% chktex-file 44
+% chktex-file 24
+% chktex-file 8
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.3\textwidth]{../images/logo_utb.png}
+    \par\vspace{.5cm}
+
+    {\scshape\LARGE Universidad Tecnológica de Bolívar \par}
+    \vspace{1cm}
+
+    {\scshape\Large Inteligencia Artificial \par}
+    \vspace{1.5cm}
+
+    \slshape {\Large \bfseries{}Agente Inteligente de Ciberseguridad\\}
+    \vspace{2.5cm}
+
+    \slshape {\itshape{} Mauro Alonso González Figueroa, T00067622 \\}
+    \slshape {\itshape{} Juan Jose Jiménez Guardo, T00068278 \\}
+
+    \vfill
+    Revisado Por \\
+    Edwin Alexander Puertas Del Castillo\\
+    {\large \today\par}
+\end{titlepage}
+
+\tableofcontents{}
+\newpage
+
+\input{Sections/introduction.tex}
+\input{Sections/peas.tex}
+\input{Sections/description.tex}
+\input{Sections/design.tex}
+\input{Sections/implementation.tex}
+\input{Sections/evaluation.tex}
+\input{Sections/conclusions.tex}
+
+\newpage
+
+\appendix
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos}
+
+\subsection*{Código Fuente}
+El código fuente completo del agente se encuentra disponible en el repositorio de GitHub:\\
+\url{https://github.com/MauroGonzalez51/cibersecurity-agent}
+
+\subsection*{Variables de Entorno Requeridas}
+
+Para el correcto funcionamiento del sistema, es necesario definir las siguientes variables de entorno en un archivo \texttt{.env} en la raíz del proyecto:
+
+\begin{itemize}
+    \item \texttt{POSTGRES\_USER}: Usuario de la base de datos PostgreSQL\@{}.
+    \item \texttt{POSTGRES\_PASSWORD}: Contraseña de la base de datos PostgreSQL\@{}.
+    \item \texttt{POSTGRES\_HOST}: Host de la base de datos PostgreSQL\@{}.
+    \item \texttt{POSTGRES\_PORT}: Puerto de la base de datos PostgreSQL (por defecto, 5432).
+    \item \texttt{POSTGRES\_DB}: Nombre de la base de datos PostgreSQL\@{}.
+    \item \texttt{OPENROUTER\_API\_KEY}: Clave de API para el servicio OpenRouter.
+    \item \texttt{VIRUSTOTAL\_API\_KEY}: Clave de API para el servicio VirusTotal.
+    \item \texttt{GEOIP\_DATABASE\_PATH}: Ruta al archivo de base de datos GeoLite2-City.mmdb (Opcional).
+\end{itemize}
+
+\end{document}

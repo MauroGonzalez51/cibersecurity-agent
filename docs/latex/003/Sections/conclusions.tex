@@ -1,0 +1,19 @@
+\section{Conclusiones y Mejoras Futuras}
+
+El desarrollo de este sistema representa una aproximación inicial a la construcción de un agente inteligente de ciberseguridad. Si bien el agente implementado cumple únicamente con funciones básicas de análisis y decisión sobre solicitudes HTTP, la arquitectura modular y la integración con servicios externos sientan las bases para futuras extensiones.
+
+Entre los principales logros se destaca la capacidad del sistema para recolectar información relevante de cada solicitud, consultar fuentes externas de reputación y geolocalización, y tomar decisiones automatizadas de bloqueo o permiso. Además, el uso de una base de datos relacional permite la actualización dinámica de los indicadores de riesgo, tanto por país como por dirección IP\@{}.
+
+Sin embargo, el sistema actual presenta limitaciones importantes. No incorpora mecanismos de aprendizaje automático, memoria avanzada ni razonamiento autónomo, características propias de agentes inteligentes más sofisticados. La evaluación se realizó en un entorno controlado y con datos simulados, por lo que se requiere una validación más exhaustiva en escenarios reales.
+
+Como mejoras futuras se proponen:
+
+\begin{itemize}
+    \item Incorporar módulos de aprendizaje automático para la detección proactiva de amenazas.
+    \item Implementar mecanismos de memoria y razonamiento avanzado, como \textit{Retrieval-Augmented Generation} (RAG) o integración con bases de conocimiento externas.
+    \item Ampliar la cobertura de análisis, integrando nuevas fuentes de información y servicios de inteligencia de amenazas.
+    \item Realizar pruebas en entornos de producción y ajustar los umbrales de decisión según el contexto operativo.
+    \item Desarrollar una interfaz de monitoreo y visualización para facilitar la gestión y auditoría de eventos.
+\end{itemize}
+
+En conclusión, el trabajo realizado constituye una base sólida sobre la cual se pueden construir agentes de ciberseguridad más avanzados y adaptativos, capaces de responder de manera eficiente a los desafíos de un entorno digital en constante evolución.

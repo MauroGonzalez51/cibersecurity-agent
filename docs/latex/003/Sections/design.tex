@@ -1,0 +1,59 @@
+\section{Diseño del Agente}
+
+\subsection{Arquitectura General}
+
+El agente está estructurado en módulos independientes que interactúan a través de un flujo centralizado de procesamiento de solicitudes. La arquitectura se basa en el patrón percepción $\rightarrow$ razonamiento $\rightarrow$ acción, donde cada solicitud HTTP desencadena una serie de análisis y decisiones automatizadas.
+
+La arquitectura completa del agente se encuentra aqui:\\ \url{https://github.com/MauroGonzalez51/cibersecurity-agent/blob/master/docs/pipeline.png}
+
+\subsection{Descripción del Comportamiento del Agente}
+
+El ciclo de funcionamiento del agente se compone de las siguientes etapas:
+
+\begin{enumerate}
+    \item \textbf{Percepción:} El agente recibe una solicitud HTTP y extrae información relevante, como la dirección IP de origen, el país asociado y otros metadatos.
+    \item \textbf{Análisis:} Se ejecutan módulos especializados:
+    \begin{itemize}
+        \item \textbf{GeoIP:} Determina la ubicación geográfica de la IP y actualiza los contadores de riesgo por país.
+        \item \textbf{VirusTotal:} Consulta la reputación de la IP en bases de datos externas.
+        \item \textbf{IA/Heurística:} Evalúa el contexto y posibles amenazas mediante reglas y ponderaciones.
+    \end{itemize}
+    \item \textbf{Razonamiento:} El motor de razonamiento centraliza los resultados de los análisis, pondera los riesgos y decide la acción a tomar (permitir o bloquear la solicitud).
+    \item \textbf{Acción:} Según la decisión, el agente actualiza los registros en la base de datos y retorna una respuesta al usuario o sistema externo.
+\end{enumerate}
+
+\subsection{Flujo Percepción, Razonamiento, Acción}
+
+El flujo completo se puede resumir como:
+
+\begin{itemize}
+    \item \textbf{Percepción:} Recolección de datos de la solicitud y del entorno.
+    \item \textbf{Razonamiento:} Evaluación de riesgos y amenazas mediante la integración de múltiples fuentes de información.
+    \item \textbf{Acción:} Ejecución de la decisión (bloqueo, registro, notificación).
+\end{itemize}
+
+\section{Representación del Conocimiento}
+
+La representación del conocimiento en el agente se basa principalmente en estructuras de datos y reglas condicionales implementadas en Python. El sistema no utiliza lógica de primer orden (FOL) ni memoria conversacional avanzada, pero sí integra mecanismos para almacenar y actualizar información relevante sobre el contexto de cada solicitud.
+
+\subsection{Estructuras de Datos y Reglas}
+
+El conocimiento sobre el entorno y las amenazas se almacena en modelos de base de datos relacional (\texttt{CountryRiskRecord}, \texttt{IpRiskRecord}), donde se registran atributos como la cantidad de solicitudes, el número de eventos maliciosos y los puntajes de riesgo asociados a cada país o dirección IP.\@{}Estos registros permiten al agente mantener un historial dinámico y actualizado del comportamiento observado.
+
+Las decisiones se toman mediante un motor de razonamiento que aplica reglas heurísticas y ponderaciones sobre los resultados de los módulos de análisis (GeoIP, VirusTotal, IA). Por ejemplo, si el puntaje de riesgo acumulado supera un umbral predefinido, la solicitud es bloqueada automáticamente.
+
+\subsection{Base de Conocimiento}
+
+La base de conocimiento del agente está compuesta por los datos almacenados en la base de datos PostgreSQL, que incluyen:
+
+\begin{itemize}
+    \item Estadísticas de riesgo por país (\texttt{CountryRiskRecord}).
+    \item Estadísticas de riesgo por dirección IP (\texttt{IpRiskRecord}).
+    \item Resultados de análisis de reputación y geolocalización.
+\end{itemize}
+
+Esta información es consultada y actualizada en tiempo real durante el procesamiento de cada solicitud, permitiendo que el agente adapte su comportamiento en función de la experiencia acumulada.
+
+\subsection{Consideraciones para Futuras Mejoras}
+
+Aunque actualmente el agente no implementa lógica FOL ni mecanismos de memoria avanzada, la arquitectura modular permite la incorporación futura de técnicas como \textit{Retrieval-Augmented Generation} (RAG), integración con bases de conocimiento externas o el uso de modelos de lenguaje para razonamiento más sofisticado.

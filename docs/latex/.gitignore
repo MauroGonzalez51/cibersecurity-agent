@@ -1,0 +1,17 @@
+**/*.log
+**/*.aux
+**/*.bbl
+**/*.bbl-SAVE-ERROR
+**/*.fdb_latexmk
+**/*.synctex.gz
+**/*.blg
+**/*.fls
+**/*.synctex(busy)
+**/*.run.xml
+**/*.bcf
+**/*.bcf-SAVE-ERROR
+**/*.out
+**/*.toc
+Random/**
+.vscode
+.venv

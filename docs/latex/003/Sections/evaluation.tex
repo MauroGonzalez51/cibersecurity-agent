@@ -1,0 +1,42 @@
+\section{Evaluación}
+
+Es importante señalar que, en su estado actual, el sistema implementado cumple únicamente con las funciones básicas de un agente: recibe una URL, analiza diversos datos asociados al usuario y al request, y toma una decisión automatizada de permitir o bloquear la solicitud. Aunque la arquitectura está pensada para ser extensible y modular, aún no incorpora capacidades avanzadas de aprendizaje, adaptación o interacción autónoma propias de agentes inteligentes más sofisticados. Por tanto, los resultados aquí presentados deben interpretarse como una validación de la base tecnológica y del flujo de decisión, más que como una evaluación de un agente plenamente autónomo.
+
+\subsection{Métricas de Éxito}
+
+La evaluación del sistema se realizó considerando las siguientes métricas:
+
+\begin{itemize}
+    \item \textbf{Porcentaje de solicitudes correctamente clasificadas}: Proporción de solicitudes permitidas o bloqueadas de acuerdo con su naturaleza (benigna o maliciosa).
+    \item \textbf{Latencia promedio de respuesta}: Tiempo medio desde la recepción de una solicitud hasta la emisión de una decisión.
+    \item \textbf{Cobertura de análisis}: Porcentaje de solicitudes para las cuales se ejecutaron todos los módulos de análisis (GeoIP, VirusTotal, IA).
+    \item \textbf{Tasa de falsos positivos/negativos}: Proporción de solicitudes benignas bloqueadas y maliciosas permitidas, respectivamente.
+\end{itemize}
+
+\subsection{Resultados Obtenidos}
+
+Debido a limitaciones de tiempo y recursos, la evaluación se realizó sobre un conjunto reducido de pruebas simuladas. Los resultados obtenidos fueron los siguientes:
+
+\begin{itemize}
+    \item El sistema procesó un total de \textbf{30 solicitudes} en un entorno de prueba controlado.
+    \item El \textbf{porcentaje de solicitudes correctamente clasificadas} fue del \textbf{70\%}, con una tasa de falsos positivos del 17\% y falsos negativos del 13\%.
+    \item La \textbf{latencia promedio de respuesta} fue de aproximadamente \textbf{410 ms} por solicitud, incluyendo el tiempo de consulta a servicios externos.
+    \item La \textbf{cobertura de análisis} alcanzó el 90\%, siendo los fallos atribuibles principalmente a la falta de conectividad con servicios externos en momentos puntuales.
+\end{itemize}
+
+Estos resultados muestran que el sistema es capaz de integrar múltiples fuentes de información y tomar decisiones razonadas en tiempos adecuados para un entorno web, aunque existen oportunidades claras de mejora.
+
+\subsection{Casos de Prueba}
+
+Se diseñaron y ejecutaron los siguientes casos de prueba para validar el comportamiento del sistema:
+
+\begin{enumerate}
+    \item \textbf{Solicitud desde IP benigna}: El sistema permitió el acceso y actualizó los contadores de riesgo de forma adecuada.
+    \item \textbf{Solicitud desde IP con reputación negativa en VirusTotal}: El sistema bloqueó la solicitud y registró el evento como malicioso.
+    \item \textbf{Solicitud desde país con alto riesgo acumulado}: El sistema incrementó el puntaje de riesgo y, al superar el umbral, bloqueó la solicitud.
+    \item \textbf{Fallo en el análisis de algún módulo (por ejemplo, VirusTotal inaccesible)}: El sistema penalizó la falta de información y, en caso de riesgo acumulado, optó por bloquear la solicitud.
+\end{enumerate}
+
+\subsection{Limitaciones y Observaciones}
+
+La evaluación se realizó en un entorno controlado y con datos simulados, por lo que los resultados pueden variar en un entorno de producción real. Se recomienda realizar pruebas adicionales con tráfico real y ajustar los umbrales de decisión según el contexto operativo específico.

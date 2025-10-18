@@ -1,0 +1,30 @@
+\section{Descripción del Agente}
+
+El agente desarrollado en este proyecto tiene como objetivo principal la detección y gestión de riesgos cibernéticos en una infraestructura web. Su diseño se basa en la arquitectura modular de \textbf{Python} y el framework \textbf{Django}, permitiendo la integración de diferentes módulos de análisis y la administración eficiente de los datos recolectados.
+
+El agente opera de manera autónoma, procesando solicitudes HTTP y aplicando un ciclo de percepción, razonamiento y acción. Para cada solicitud, el sistema realiza análisis de geolocalización, reputación de IP (VirusTotal) y evaluación heurística mediante un motor de razonamiento centralizado. Los resultados de estos análisis se almacenan en una base de datos \textbf{PostgreSQL}, permitiendo la actualización dinámica de los indicadores de riesgo tanto por país como por dirección IP\@{}.
+
+La arquitectura propuesta facilita la escalabilidad y la incorporación de nuevos módulos de análisis en el futuro, como algoritmos de inteligencia artificial o integración con plataformas externas de ciberseguridad.
+
+\subsection{Plataforma Utilizada}
+
+El agente se implementó utilizando las siguientes tecnologías:
+
+\begin{itemize}
+    \item \textbf{Python 3.11}: Lenguaje principal de desarrollo.
+    \item \textbf{Django 4.x}: Framework web para la gestión de modelos, vistas y lógica de negocio.
+    \item \textbf{PostgreSQL}: Sistema de gestión de bases de datos relacional, utilizado para almacenar los registros de riesgo y eventos.
+    \item \textbf{VirusTotal API}: Servicio externo para la evaluación de reputación de direcciones IP\@{}.
+    \item \textbf{GeoLite2}: Base de datos de geolocalización para el análisis de ubicación de las IPs.
+\end{itemize}
+
+\subsection{Tipo de Agente}
+
+El agente desarrollado puede clasificarse como un \textbf{agente híbrido}, ya que combina procesamiento lógico, heurístico y la integración de servicios externos basados en inteligencia artificial. Aunque la base del sistema se apoya en reglas y estructuras de datos tradicionales, se contempla la incorporación de módulos de razonamiento avanzado y análisis automatizado en futuras versiones.
+
+\subsection{Justificación de Elección de Entorno}
+
+La elección de \textbf{Python} y \textbf{Django} como entorno de desarrollo se justifica por su amplia adopción en el ámbito de la ciberseguridad, la facilidad para construir aplicaciones modulares y la disponibilidad de librerías especializadas para el análisis de datos y la integración con APIs externas. Django proporciona una estructura robusta para la gestión de modelos y vistas, mientras que Python facilita la implementación de lógica compleja y el manejo eficiente de flujos de datos.
+
+
+El uso de \textbf{PostgreSQL} como base de datos garantiza escalabilidad y confiabilidad en el almacenamiento de registros de riesgo, y la integración con servicios como \textbf{VirusTotal} y \textbf{GeoLite2} permite enriquecer el análisis de amenazas con información actualizada y relevante.
